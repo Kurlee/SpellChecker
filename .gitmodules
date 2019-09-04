@@ -1,0 +1,3 @@
+[submodule "AppSecAssignment1"]
+	path = AppSecAssignment1
+	url = git@github.com:kcg295/AppSecAssignment1.git

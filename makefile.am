@@ -1,0 +1,3 @@
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = spell_check
+helloworld_SOURCES = main.c

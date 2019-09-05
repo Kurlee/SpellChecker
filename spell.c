@@ -10,8 +10,12 @@
 #include <stdlib.h>
 #include "spell.h"
 #include "AppSecAssignment1/dictionary.h"
+#include "AppSecAssignment1/dictionary.c"
 
-    char word[123132][26];
+#define MAX_LETTERS_IN_WORD  26
+#define MAX_WORDS_IN_DICTIONARY  124000
+
+
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[]);
 
 /**
@@ -24,26 +28,25 @@ bool check_word(const char* word, hashmap_t hashtable[]);
  */
 bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 {
-    FILE * dict = NULL;
-    int i = 0;
+    FILE * dictionary_list;
+    char * line = NULL;
+    size_t len = 0;
     ssize_t read;
-    size_t * len = 0;
-    
-    int max_word_length = 26;
-    int line_buffer = 100;
-    char ** words = (char **)malloc(sizeof(char *)*line_buffer);
-    if (words == NULL)
+    int i = 0;
+
+    if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
     {
-        fprintf( stderr, "Out of memory(1)\n" );
+        fprintf(stderr, " Error opening file");
         exit(1);
     }
-    if ((dict = fopen(dictionary_file, "r")) == NULL)
+    
+    while ((read = getline(&line, &len, dictionary_list)) != -1)
     {
-        fprintf( stderr, "Error opening file");
-        exit(2);
+        printf("word: %s\n", line);
+       // hashtable[i] = hash_function(line);
+        i++;
     }
 
-    fclose(dict);
-    
+    fclose(dictionary_list);
+    return true;
 }
-

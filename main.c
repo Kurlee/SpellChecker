@@ -7,10 +7,10 @@
 //
 
 #include <stdio.h>
-#include "spell.h"
+#include "spell.c"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
+    hashmap_t hashie;
+    load_dictionary("dictionary_file", &hashie);
     return 0;
 }

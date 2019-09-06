@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS = foreign
-bin_PROGRAMS = spell_check
+bin_PROGRAMS = main
 spell_check_SOURCES = main.c

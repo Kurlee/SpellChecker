@@ -6,13 +6,18 @@
 //  Copyright © 2019 Adrian Abdala. All rights reserved.
 //
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 #include "spell.h"
 #include "AppSecAssignment1/dictionary.h"
 #include "AppSecAssignment1/dictionary.c"
 
 #define MAX_LETTERS_IN_WORD  26
+#include <string.h>
+#include <string.h>
 #define MAX_WORDS_IN_DICTIONARY  124000
 
 

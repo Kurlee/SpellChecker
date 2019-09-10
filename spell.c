@@ -6,7 +6,6 @@
 //  Copyright © 2019 Adrian Abdala. All rights reserved.
 //
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,24 +14,39 @@
 #include "AppSecAssignment1/dictionary.h"
 #include "AppSecAssignment1/dictionary.c"
 
-#define MAX_LETTERS_IN_WORD  26
 #include <string.h>
 #include <string.h>
-#define MAX_WORDS_IN_DICTIONARY  124000
 
 
-//int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[]);
+/**
+ * Returns true if all words are spelled correcty, false otherwise. Array misspelled is populated with words that are misspelled.
+ */
+int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
+{
+    char* buff[45];
+    int number_misspelled = 0;
+    while(fscanf(fp, "%s", buff)==1){
+        if(!check_word(buff, hashtable)){
+            misspelled[number_misspelled] = buff;
+            number_misspelled++;
+        }
+    }
+    return(!number_misspelled);
+}
 
 /**
  * Returns true if word is in dictionary else false.
  */
 bool check_word(const char* word, hashmap_t hashtable[])
 {
-    int i = 0;
-    for (i; i < HASH_SIZE; i++)
-    {
-        if (word == hashtable[i]->word)
+    int hashed = hash_function(word);
+    node * current = hashtable[hashed];
+
+    while(current != NULL){
+        if (current->word == word)
             return true;
+        else
+            current=current->next;
     }
     return false;
 }
@@ -44,11 +58,11 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 {
     FILE *dictionary_list;
     char *line_buff = NULL;
-    int line_count = 0;
+    int hashed;
     size_t line_buff_size = 0;
     ssize_t line_size;
-    node root;
-    node link;
+    struct node *head = NULL;
+    struct node *current = NULL;
 
 
     if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
@@ -56,21 +70,26 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
         fprintf(stderr, " Error opening file\n");
         exit(1);
     }
-    
+
     line_size = getline(&line_buff, &line_buff_size, dictionary_list);
-    strcpy(root.word, line_buff);
 
     while (line_size >= 0)
     {
-        printf("line[%06d]: chars=%06zd, buf size=%06zu, contents: %s", line_count, line_size, line_buff_size, line_buff);
+        hashed = hash_function(line_buff);
+        head = hashtable[hashed];
+        if (head == NULL){
+            struct node* link = (struct node*)malloc(sizeof(struct node));
+            strcpy(link->word, line_buff);
+            link->next = head;
+            head = link;
+            continue;
+        }
+        while (current->next != NULL) {
+            current = current->next;
+        }
+
+        strcpy(current->word, line_buff);
         line_size = getline(&line_buff, &line_buff_size, dictionary_list);
-        strcpy(link.word, line_buff);
-        root.next = &link;
-        hashtable[hash_function(line_buff)] = &root;
-        root=link;
-        line_count = line_count + 1;
-
-
     }
     free(line_buff);
     line_buff = NULL;

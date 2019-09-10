@@ -100,7 +100,7 @@ int main(int argc, const char ** argv) {
     if (arguments.verbose)
         printf("VERBOSE");
 
-    hashmap_t hashie;
-    load_dictionary(arguments.args[0], hashie);
+    hashmap_t hashtable[HASH_SIZE];
+    load_dictionary(arguments.args[0], hashtable);
     return 0;
 }

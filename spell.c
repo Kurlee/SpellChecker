@@ -40,7 +40,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
     ssize_t line_size;
     node root;
     node link;
-    
+
 
     if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
     {
@@ -49,17 +49,19 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
     }
     
     line_size = getline(&line_buff, &line_buff_size, dictionary_list);
-    
+    strcpy(root.word, line_buff);
+
     while (line_size >= 0)
     {
         printf("line[%06d]: chars=%06zd, buf size=%06zu, contents: %s", line_count, line_size, line_buff_size, line_buff);
-        strcpy(root.word, line_buff);
+        line_size = getline(&line_buff, &line_buff_size, dictionary_list);
+        strcpy(link.word, line_buff);
         root.next = &link;
-        hashtable[line_count] = &root;
+        hashtable[hash_function(line_buff)] = &root;
+        root=link;
         line_count = line_count + 1;
 
-        line_size = getline(&line_buff, &line_buff_size, dictionary_list);
-        
+
     }
     free(line_buff);
     line_buff = NULL;

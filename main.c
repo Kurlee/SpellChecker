@@ -102,5 +102,16 @@ int main(int argc, const char ** argv) {
 
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(arguments.args[0], hashtable);
+    bool isDogAWord = 0;
+    isDogAWord = check_word("dog", hashtable);
+    if (isDogAWord)
+    {
+        printf("dog is a word");
+    }
+    else
+    {
+        printf("dog is not a word");
+    }
+
     return 0;
 }

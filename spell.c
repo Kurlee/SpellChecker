@@ -26,7 +26,16 @@
 /**
  * Returns true if word is in dictionary else false.
  */
-//bool check_word(const char* word, hashmap_t hashtable[]);
+bool check_word(const char* word, hashmap_t hashtable[])
+{
+    int i = 0;
+    for (i; i < HASH_SIZE; i++)
+    {
+        if (word == hashtable[i]->word)
+            return true;
+    }
+    return false;
+}
 
 /**
  * Loads dictionary into memory.  Returns true if successful else false.

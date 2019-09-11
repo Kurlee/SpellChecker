@@ -17,7 +17,6 @@ struct arguments
 {
     char *args[1];          // Arguments 1 and 2
     int verbose;            // -v verbosity flag
-    char *dictionary_file;  // Reference file to set correctly spelled words
     char *checked_file;     // File to be compared against
     char *output_file;      // Optionally set file for output
 };
@@ -40,9 +39,6 @@ parse_opt (int key, char *arg, struct argp_state *state)
     switch(key) {
         case 'v':
             arguments->verbose = 1;
-            break;
-        case 'd':
-            arguments->dictionary_file = arg;
             break;
         case 'c':
             arguments->checked_file = arg;
@@ -92,17 +88,18 @@ int main(int argc, const char ** argv) {
     else
         outstream = stdout;
 
-    if (arguments.output_file)
-        fprintf(outstream, "dictionary file: %s\nChecked File: %s\n", arguments.args[0]);
-    else
-        fprintf(outstream, "dictionary file: %s\nNo Checked file passed", arguments.args[0], arguments.checked_file);
+    fprintf(outstream, "dictionary file: %s\nNo Checked file: %s\n", arguments.args[0], arguments.checked_file);
 
     if (arguments.verbose)
         printf("VERBOSE");
 
-    hashmap_t hashtable[HASH_SIZE];
+    hashmap_t hashtable[HASH_SIZE] = { 0 };
     load_dictionary(arguments.args[0], hashtable);
-    printf("%d\n",check_word("dog", hashtable));
+    if (arguments.checked_file){
+        FILE *fp = fopen(arguments.checked_file, 'r');
+        char * misspelled[150];
+        check_words(fp, hashtable, misspelled);
+    }
 
     return 0;
 }

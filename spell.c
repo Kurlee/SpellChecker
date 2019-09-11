@@ -16,6 +16,7 @@
 
 #include <string.h>
 #include <string.h>
+#include <arpa/nameser.h>
 
 
 /**
@@ -23,13 +24,21 @@
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    char* buff[45];
+    const char * word[LENGTH +1];
+    ssize_t line_size;          // chars in string from file
     int number_misspelled = 0;
-    while(fscanf(fp, "%s", buff)==1){
-        if(!check_word(buff, hashtable)){
-            misspelled[number_misspelled] = buff;
+
+    line_size = fscanf(fp, "%s", word);
+
+    while (line_size >= 0) {
+        if (check_word(word, hashtable)){
+            continue;
+        }
+        else{
+            misspelled[number_misspelled] = word;
             number_misspelled++;
         }
+        line_size = fscanf(fp, "%s", word);
     }
     return(!number_misspelled);
 }
@@ -39,11 +48,14 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
  */
 bool check_word(const char* word, hashmap_t hashtable[])
 {
-    int hashed = hash_function(word);
-    node * current = hashtable[hashed];
+    int hashed = hash_function(word);       // hash value of word being passed in
+    node * current = hashtable[hashed];     // current link in the list
 
+    // hash word to be compared to get main index of array
+    //iterate through linked list comparing strings
     while(current != NULL){
-        if (current->word == word)
+        if (strcmp(word, current->word) != 0)
+            // return true if one of the links matches
             return true;
         else
             current=current->next;
@@ -56,45 +68,46 @@ bool check_word(const char* word, hashmap_t hashtable[])
  */
 bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 {
-    FILE *dictionary_list;
-    char *line_buff = NULL;
-    int hashed;
-    size_t line_buff_size = 0;
-    ssize_t line_size;
-    struct node *head = NULL;
-    struct node *current = NULL;
+    FILE *dictionary_list;      // File to read dictionary
+    char *line_buff = NULL;     // String from file
+    char *pos;                  // position of newline character
+    int hashed;                 // hash value of string
+    size_t line_buff_size = 0;  // size of string buffer
+    ssize_t line_size;          // chars in string from file
 
 
+    // open file
     if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
     {
         fprintf(stderr, " Error opening file\n");
         exit(1);
     }
 
+    // read line and chomp newline
     line_size = getline(&line_buff, &line_buff_size, dictionary_list);
+    if ((pos = strchr(line_buff, '\n')) != NULL)
+        *pos = '\0';
 
-    while (line_size >= 0)
-    {
+    while (line_size >= 0) {
+
+        // set index
         hashed = hash_function(line_buff);
-        head = hashtable[hashed];
-        if (head == NULL){
-            struct node* link = (struct node*)malloc(sizeof(struct node));
-            strcpy(link->word, line_buff);
-            link->next = head;
-            head = link;
-            continue;
-        }
-        while (current->next != NULL) {
-            current = current->next;
-        }
 
-        strcpy(current->word, line_buff);
+        //init a node and allocate memory
+        struct node *current = (struct node *) malloc(sizeof(struct node));
+        // set data for node
+        for (int i = 0; i < line_size; i++) {
+            current->word[i] = line_buff[i];
+        }
+        // preappend node to linked list. This elimiates the need to find the end every time
+        current->next = hashtable[hashed];
+        hashtable[hashed] = current;
+
+
+
+        // Get next line in file and chomp newline
         line_size = getline(&line_buff, &line_buff_size, dictionary_list);
+        if ((pos = strchr(line_buff, '\n')) != NULL)
+            *pos = '\0';
     }
-    free(line_buff);
-    line_buff = NULL;
-    
-
-    fclose(dictionary_list);
-    return true;
 }

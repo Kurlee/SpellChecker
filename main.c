@@ -12,6 +12,7 @@
 #include "spell.c"
 
 
+const char *argp_program_version = "spell_checker 1.0";
 
 struct arguments
 {
@@ -26,9 +27,8 @@ struct arguments
 static struct argp_option options[] =
         {
                 {"verbose", 'v', 0, 0, "Produce verbose output"},
-                {"dictionary_file", 'd', "../dictionary_file", 0, "Set Dictionary File"},
-                {"checked_file", 'c', 0, 0, "Set checked file"},
-                {"output_file", 'o', "output", 0, "Optionally set output file "},
+                {"checked-file", 'c', "INPUT", 0, "Set checked file"},
+                {"output_file", 'o', "OUTPUT", 0, "Optionally set output file "},
                 {0}
         };
 static error_t
@@ -77,29 +77,35 @@ int main(int argc, const char ** argv) {
 
     struct arguments arguments;
     FILE *outstream;
+    FILE *input;
+    char * misspelled[150] = { 0 };
+    hashmap_t hashtable[HASH_SIZE] = { 0 };
 
     arguments.output_file = NULL;
     arguments.checked_file = NULL;
     arguments.verbose = 0;
-    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    argp_parse(&argp, argc, (char **) argv, 0, 0, &arguments);
 
     if (arguments.output_file)
-        outstream = fopen(arguments.output_file, 'w');
+        outstream = fopen(arguments.output_file, (const char *) "w");
     else
         outstream = stdout;
+    if (arguments.checked_file)
+        input = fopen(arguments.checked_file, "r");
+    else
+        input = NULL;
 
-    fprintf(outstream, "dictionary file: %s\nNo Checked file: %s\n", arguments.args[0], arguments.checked_file);
-
-    if (arguments.verbose)
+    if (arguments.verbose) {
         printf("VERBOSE");
-
-    hashmap_t hashtable[HASH_SIZE] = { 0 };
-    load_dictionary(arguments.args[0], hashtable);
-    if (arguments.checked_file){
-        FILE *fp = fopen(arguments.checked_file, 'r');
-        char * misspelled[150];
-        check_words(fp, hashtable, misspelled);
     }
 
+    load_dictionary(arguments.args[0], hashtable);
+    check_words(input, hashtable, misspelled);
+
+    for (int i = 0; i < 150; i++){
+        if (misspelled[i] != NULL){
+            printf("%s was misspelled", misspelled[i]);
+        }
+    }
     return 0;
 }

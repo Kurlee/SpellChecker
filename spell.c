@@ -24,21 +24,35 @@
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    const char * word[LENGTH +1];
-    ssize_t line_size;          // chars in string from file
+    int c;
+    size_t word_size = 0;          // chars in string from file
     int number_misspelled = 0;
 
-    line_size = fscanf(fp, "%s", word);
+    if (fp == NULL){
+        exit(5);
+    }
 
-    while (line_size >= 0) {
-        if (check_word(word, hashtable)){
+    while (( c = fgetc(fp)) != EOF)
+    {
+        char *word = malloc((LENGTH+1) * sizeof(char));
+        if ((!isspace((char) c))){
+            word[word_size] = (char) c;
+            word_size++;
+        }
+        else if (c == 32 || c == 10){
             continue;
         }
-        else{
+        else if(check_word(word, hashtable)){
+            word_size = 0;
+            free(word);
+            continue;
+        }
+        else {
             misspelled[number_misspelled] = word;
+            word_size = 0;
+            free(word);
             number_misspelled++;
         }
-        line_size = fscanf(fp, "%s", word);
     }
     return(!number_misspelled);
 }
@@ -54,9 +68,10 @@ bool check_word(const char* word, hashmap_t hashtable[])
     // hash word to be compared to get main index of array
     //iterate through linked list comparing strings
     while(current != NULL){
-        if (strcmp(word, current->word) != 0)
+        if (strcmp(word, current->word) == 0) {
             // return true if one of the links matches
             return true;
+        }
         else
             current=current->next;
     }
@@ -70,8 +85,8 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 {
     FILE *dictionary_list;      // File to read dictionary
     char *line_buff = NULL;     // String from file
-    char *pos;                  // position of newline character
-    int hashed;                 // hash value of string
+    char *pos = 0;                  // position of newline character
+    int hashed = 0;                 // hash value of string
     size_t line_buff_size = 0;  // size of string buffer
     ssize_t line_size;          // chars in string from file
 
@@ -110,4 +125,6 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
         if ((pos = strchr(line_buff, '\n')) != NULL)
             *pos = '\0';
     }
+    free(line_buff);
+    fclose(dictionary_list);
 }

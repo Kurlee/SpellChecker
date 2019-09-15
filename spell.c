@@ -20,6 +20,31 @@
 
 
 
+char * StrToLower(char *str)
+{
+    char *pNew1 = str;
+    char *pNew2 = str;
+
+    if(str != NULL) //NULL ?
+    {
+        if(strlen(str) != 0) //"" ?
+        {
+            while(*pNew1)
+            {
+                *pNew2 = tolower(*pNew1);
+                ++pNew2;
+                ++pNew1;
+            }
+            *pNew2 = '\0';
+            return str;// return changed string
+        }              // and prevent returning null to caller
+    }
+    return "";//Will never get here for non-null input argurment
+}
+
+
+
+
 /**
  * Returns true if all words are spelled correcty, false otherwise. Array misspelled is populated with words that are misspelled.
  */
@@ -30,8 +55,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
     size_t line_buff_size = 0;  // size of string buffer
     ssize_t line_size;          // chars in string from file
     char * pch;
-    char str[] = "";
-    size_t word_size = 0;          // chars in string from file
     int number_misspelled = 0;
 
     if (fp == NULL){
@@ -44,15 +67,22 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 
     while (line_size >= 0) {
 
-        // set index
+        // from line, get first word
         pch = strtok(line_buff," ,.=");
         while (pch != NULL) {
+            // check original word
             if (check_word(pch, hashtable)) {
-                continue;
+                pch = strtok(NULL, " ,.-");
             }
+            // if not on list, check lowercase version
+            else if (check_word(StrToLower(pch), hashtable)) {
+                pch = strtok(NULL, " ,.-");
+            }
+            // else is not a word, add to misspelled and move onto next word
             else {
                 misspelled[number_misspelled] = pch;
                 number_misspelled++;
+                pch = strtok(NULL, " ,.-");
             }
         }
         // Get next line in file and chomp newline
@@ -78,16 +108,13 @@ bool check_word(const char* word, hashmap_t hashtable[])
     // hash word to be compared to get main index of array
     //iterate through linked list comparing strings
     while(current != NULL){
-        if (strcmp(word, current->word) == 0) {
-            // return true if one of the links matches
+        if (strcmp(word, current->word) == 0)
             return true;
-        }
         else
             current=current->next;
     }
     return false;
 }
-
 
 
 
@@ -105,9 +132,11 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 
 
     // open file
+    errno = 0;
     if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
     {
         fprintf(stderr, " Error opening file\n");
+        printf("Error %d \n", errno);
         exit(1);
     }
 

@@ -104,7 +104,7 @@ int main(int argc, const char ** argv) {
 
     for (int i = 0; i < 150; i++){
         if (misspelled[i] != NULL){
-            printf("%s was misspelled", misspelled[i]);
+            printf("%s was misspelled\n", misspelled[i]);
         }
     }
     return 0;

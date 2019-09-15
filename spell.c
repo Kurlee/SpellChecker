@@ -132,11 +132,9 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 
 
     // open file
-    errno = 0;
     if ((dictionary_list = fopen(dictionary_file, "r")) == NULL)
     {
         fprintf(stderr, " Error opening file\n");
-        printf("Error %d \n", errno);
         exit(1);
     }
 

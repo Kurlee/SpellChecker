@@ -13,10 +13,11 @@
 #include "spell.h"
 #include "AppSecAssignment1/dictionary.h"
 #include "AppSecAssignment1/dictionary.c"
-
 #include <string.h>
 #include <string.h>
 #include <arpa/nameser.h>
+
+
 
 
 /**
@@ -24,7 +25,12 @@
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    int c;
+    char *line_buff = NULL;     // String from file
+    char *pos = 0;                  // position of newline character
+    size_t line_buff_size = 0;  // size of string buffer
+    ssize_t line_size;          // chars in string from file
+    char * pch;
+    char str[] = "";
     size_t word_size = 0;          // chars in string from file
     int number_misspelled = 0;
 
@@ -32,30 +38,34 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         exit(5);
     }
 
-    while (( c = fgetc(fp)) != EOF)
-    {
-        char *word = malloc((LENGTH+1) * sizeof(char));
-        if ((!isspace((char) c))){
-            word[word_size] = (char) c;
-            word_size++;
+    line_size = getline(&line_buff, &line_buff_size, fp);
+    if ((pos = strchr(line_buff, '\n')) != NULL)
+        *pos = '\0';
+
+    while (line_size >= 0) {
+
+        // set index
+        pch = strtok(line_buff," ,.=");
+        while (pch != NULL) {
+            if (check_word(pch, hashtable)) {
+                continue;
+            }
+            else {
+                misspelled[number_misspelled] = pch;
+                number_misspelled++;
+            }
         }
-        else if (c == 32 || c == 10){
-            continue;
-        }
-        else if(check_word(word, hashtable)){
-            word_size = 0;
-            free(word);
-            continue;
-        }
-        else {
-            misspelled[number_misspelled] = word;
-            word_size = 0;
-            free(word);
-            number_misspelled++;
-        }
+        // Get next line in file and chomp newline
+        line_size = getline(&line_buff, &line_buff_size, fp);
+        if ((pos = strchr(line_buff, '\n')) != NULL)
+            *pos = '\0';
     }
-    return(!number_misspelled);
+    return number_misspelled;
 }
+
+            
+
+
 
 /**
  * Returns true if word is in dictionary else false.
@@ -77,6 +87,9 @@ bool check_word(const char* word, hashmap_t hashtable[])
     }
     return false;
 }
+
+
+
 
 /**
  * Loads dictionary into memory.  Returns true if successful else false.
@@ -127,4 +140,5 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
     }
     free(line_buff);
     fclose(dictionary_list);
+    return true;
 }

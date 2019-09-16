@@ -10,16 +10,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include "spell.h"
-#include "AppSecAssignment1/dictionary.h"
-#include "AppSecAssignment1/dictionary.c"
-#include <string.h>
-#include <string.h>
+//#include "spell.h"
+//#include "AppSecAssignment1/dictionary.h"
+//#include "AppSecAssignment1/dictionary.c"
+#include "dictionary.h"
+#include <ctype.h>
 #include <arpa/nameser.h>
 
 
 
 
+char * StrToLower(char *str);
 char * StrToLower(char *str)
 {
     char *pNew1 = str;
@@ -36,6 +37,7 @@ char * StrToLower(char *str)
                 ++pNew1;
             }
             *pNew2 = '\0';
+
             return str;// return changed string
         }              // and prevent returning null to caller
     }
@@ -44,52 +46,101 @@ char * StrToLower(char *str)
 
 
 
+char *rm_punct(char *str);
+char *rm_punct(char *str) {
+    if (str == NULL){
+        return NULL;
+    }
+    char *p = str;
+    char *t = str + strlen(str) - 1;
+    while (ispunct(*p)) p++;
+    while (ispunct(*t) && p < t) { *t = 0; t--; }
+    /* also if you want to preserve the original address */
+    { int i;
+        for (i = 0; i <= t - p + 1; i++) {
+            str[i] = p[i];
+        } p = str; } /* --- */
+
+    return p;
+}
+
+
 
 /**
  * Returns true if all words are spelled correcty, false otherwise. Array misspelled is populated with words that are misspelled.
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    char *line_buff = NULL;     // String from file
+    char *line_buff = malloc(45);     // String from file
     char *pos = 0;                  // position of newline character
     size_t line_buff_size = 0;  // size of string buffer
     ssize_t line_size;          // chars in string from file
     char * pch;
     int number_misspelled = 0;
+    char * pch_copy;
 
     if (fp == NULL){
         exit(5);
     }
 
     line_size = getline(&line_buff, &line_buff_size, fp);
+
+    while (line_size > 95){
+        line_size = getline(&line_buff, &line_buff_size, fp);
+    }
     if ((pos = strchr(line_buff, '\n')) != NULL)
         *pos = '\0';
+
+
 
     while (line_size >= 0) {
 
         // from line, get first word
-        pch = strtok(line_buff," ,.=");
+        pch = strtok(line_buff," ");
+        if (pch != NULL && strlen(pch) > LENGTH)
+            pch = NULL;
+        pch = rm_punct(pch);
+        pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
+
+
+
         while (pch != NULL) {
+            strcpy(pch_copy,pch);
             // check original word
             if (check_word(pch, hashtable)) {
-                pch = strtok(NULL, " ,.-");
+                pch = strtok(NULL, " ");
+                pch = rm_punct(pch);
+                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
+                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
             // if not on list, check lowercase version
             else if (check_word(StrToLower(pch), hashtable)) {
-                pch = strtok(NULL, " ,.-");
+                pch = strtok(NULL, " ");
+                pch = rm_punct(pch);
+                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
+                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
             // else is not a word, add to misspelled and move onto next word
             else {
-                misspelled[number_misspelled] = pch;
+                //add_to_misspelled(number_misspelled, pch_copy, misspelled);
+                misspelled[number_misspelled] = (char *)malloc((LENGTH+1)*sizeof(char));
+                strcpy(misspelled[number_misspelled],pch);
                 number_misspelled++;
-                pch = strtok(NULL, " ,.-");
+                pch = strtok(NULL, " ");
+                pch = rm_punct(pch);
+                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
+                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
         }
         // Get next line in file and chomp newline
         line_size = getline(&line_buff, &line_buff_size, fp);
+        while (line_size > 100){
+            line_size = getline(&line_buff, &line_buff_size, fp);
+        }
         if ((pos = strchr(line_buff, '\n')) != NULL)
             *pos = '\0';
     }
+    free(pch_copy);
     return number_misspelled;
 }
 
@@ -105,8 +156,6 @@ bool check_word(const char* word, hashmap_t hashtable[])
     int hashed = hash_function(word);       // hash value of word being passed in
     node * current = hashtable[hashed];     // current link in the list
 
-    // hash word to be compared to get main index of array
-    //iterate through linked list comparing strings
     while(current != NULL){
         if (strcmp(word, current->word) == 0)
             return true;
@@ -148,6 +197,13 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
         // set index
         hashed = hash_function(line_buff);
 
+        if (line_size > LENGTH+1){
+
+            line_size = getline(&line_buff, &line_buff_size, dictionary_list);
+            if ((pos = strchr(line_buff, '\n')) != NULL)
+                *pos = '\0';
+            continue;
+        }
         //init a node and allocate memory
         struct node *current = (struct node *) malloc(sizeof(struct node));
         // set data for node

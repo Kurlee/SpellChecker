@@ -10,18 +10,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-//#include "spell.h"
-//#include "AppSecAssignment1/dictionary.h"
-//#include "AppSecAssignment1/dictionary.c"
-#include "dictionary.h"
+#include "spell.h"
+#include "AppSecAssignment1/dictionary.h"
+#include "AppSecAssignment1/dictionary.c"
+//#include "dictionary.h"
 #include <ctype.h>
 #include <arpa/nameser.h>
 
 
 
 
-char * StrToLower(char *str);
-char * StrToLower(char *str)
+char * str_to_lower(char *str);
+char * str_to_lower(char *str)
 {
     char *pNew1 = str;
     char *pNew2 = str;
@@ -114,7 +114,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
             // if not on list, check lowercase version
-            else if (check_word(StrToLower(pch), hashtable)) {
+            else if (check_word(str_to_lower(pch), hashtable)) {
                 pch = strtok(NULL, " ");
                 pch = rm_punct(pch);
                 pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
@@ -195,7 +195,6 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
     while (line_size >= 0) {
 
         // set index
-        hashed = hash_function(line_buff);
 
         if (line_size > LENGTH+1){
 
@@ -204,6 +203,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
                 *pos = '\0';
             continue;
         }
+        hashed = hash_function(line_buff);
         //init a node and allocate memory
         struct node *current = (struct node *) malloc(sizeof(struct node));
         // set data for node

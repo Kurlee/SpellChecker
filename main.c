@@ -81,7 +81,7 @@ int main(int argc, const char ** argv) {
     struct arguments arguments;
     FILE *outstream;
     FILE *input;
-    char * misspelled[150] = { 0 };
+    char * misspelled[MAX_MISSPELLED] = { 0 };
     hashmap_t hashtable[HASH_SIZE] = { 0 };
 
     arguments.output_file = NULL;
@@ -103,11 +103,13 @@ int main(int argc, const char ** argv) {
     }
 
     load_dictionary(arguments.args[0], hashtable);
-    check_words(input, hashtable, misspelled);
+    int miss_num = check_words(input, hashtable, misspelled);
+    printf("%d\n", miss_num);
 
-    for (int i = 0; i < 150; i++){
+
+    for (int i = 0; i < 100; i++){
         if (misspelled[i] != NULL){
-            printf("%s was misspelled\n", misspelled[i]);
+            printf("%hhX, -- %s\n", misspelled[i], misspelled[i]);
         }
     }
     return 0;

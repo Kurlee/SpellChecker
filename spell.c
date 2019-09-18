@@ -51,10 +51,15 @@ char *rm_punct(char *str) {
     while (ispunct(*t) && p < t) { *t = 0; t--; }
     /* also if you want to preserve the original address */
     { int i;
-        for (i = 0; i <= t - p + 1; i++) {
+        for (i = 0; i <= t - p + 1; i++)
+        {
             str[i] = p[i];
-        } p = str; } /* --- */
-
+        }
+        p = str;
+    } /* --- */
+    if (strlen(p) == 0){
+        return NULL;
+    }
     return p;
 }
 
@@ -105,15 +110,20 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
             }
             // else is not a word, add to misspelled and move onto next word
             else {
-                //add_to_misspelled(number_misspelled, pch_copy, misspelled);
-                misspelled[number_misspelled] = (char *)malloc((LENGTH)*sizeof(char));
-                strncpy(misspelled[number_misspelled],pch,(LENGTH));
-                number_misspelled++;
-                pch = strtok(NULL, " ");
-                pch = rm_punct(pch);
+                if (number_misspelled < MAX_MISSPELLED){
+                    misspelled[number_misspelled] = (char *)malloc((LENGTH+1)*sizeof(char));
+                    strncpy(misspelled[number_misspelled],pch,(LENGTH+1));
+                    number_misspelled++;
+                    pch = strtok(NULL, " ");
+                    pch = rm_punct(pch);
+                }
+                else{
+                    return number_misspelled;
+                }
             }
         }
         // Get next line in file and chomp newline
+        line_buff = NULL;
         line_size = getline(&line_buff, &line_buff_size, fp);
         if ((pos = strchr(line_buff, '\n')) != NULL)
             *pos = '\0';
@@ -184,9 +194,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
         //init a node and allocate memory
         struct node *current = (struct node *) malloc(sizeof(struct node));
         // set data for node
-        for (int i = 0; i < line_size; i++) {
-            current->word[i] = line_buff[i];
-        }
+        strncpy(current->word, line_buff, LENGTH+1);
         // preappend node to linked list. This elimiates the need to find the end every time
         current->next = hashtable[hashed];
         hashtable[hashed] = current;

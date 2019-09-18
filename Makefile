@@ -8,7 +8,7 @@ get-deps:
 	sudo apt-get  install -y build-essential check
 
 dictionary.o: dictionary.c
-	gcc -Wall  --std=c99 -c AppSecAssignment1/dictionary.c AppSecAssignment1/dictionary.h
+	gcc -Wall  --std=c99 -c dictionary.c dictionary.h
 
 spell.o: spell.c
 	gcc -Wall --std=c99 -c spell.c

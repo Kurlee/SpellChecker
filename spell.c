@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include "dictionary.h"
 #include <ctype.h>
-#include <arpa/nameser.h>
+//#include <arpa/nameser.h>
 
 
 

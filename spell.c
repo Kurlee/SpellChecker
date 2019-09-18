@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include "spell.h"
-#include "AppSecAssignment1/dictionary.h"
-#include "AppSecAssignment1/dictionary.c"
-//#include "dictionary.h"
+//#include "spell.h"
+//#include "AppSecAssignment1/dictionary.h"
+//#include "AppSecAssignment1/dictionary.c"
+#include "dictionary.h"
 #include <ctype.h>
 #include <arpa/nameser.h>
 
@@ -26,7 +26,7 @@ char * str_to_lower(char *str)
     char *pNew1 = str;
     char *pNew2 = str;
 
-    if(str != NULL) //NULL ?
+    if(str != NULL) //NULL
     {
         if(strlen(str) != 0) //"" ?
         {
@@ -71,23 +71,18 @@ char *rm_punct(char *str) {
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    char *line_buff = malloc(45);     // String from file
+    char *line_buff = NULL;     // String from file
     char *pos = 0;                  // position of newline character
     size_t line_buff_size = 0;  // size of string buffer
     ssize_t line_size;          // chars in string from file
     char * pch;
     int number_misspelled = 0;
-    char * pch_copy;
 
     if (fp == NULL){
         exit(5);
     }
 
     line_size = getline(&line_buff, &line_buff_size, fp);
-
-    while (line_size > 95){
-        line_size = getline(&line_buff, &line_buff_size, fp);
-    }
     if ((pos = strchr(line_buff, '\n')) != NULL)
         *pos = '\0';
 
@@ -100,47 +95,35 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         if (pch != NULL && strlen(pch) > LENGTH)
             pch = NULL;
         pch = rm_punct(pch);
-        pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
 
 
 
         while (pch != NULL) {
-            strcpy(pch_copy,pch);
             // check original word
             if (check_word(pch, hashtable)) {
                 pch = strtok(NULL, " ");
                 pch = rm_punct(pch);
-                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
-                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
             // if not on list, check lowercase version
             else if (check_word(str_to_lower(pch), hashtable)) {
                 pch = strtok(NULL, " ");
                 pch = rm_punct(pch);
-                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
-                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
             // else is not a word, add to misspelled and move onto next word
             else {
                 //add_to_misspelled(number_misspelled, pch_copy, misspelled);
-                misspelled[number_misspelled] = (char *)malloc((LENGTH+1)*sizeof(char));
-                strcpy(misspelled[number_misspelled],pch);
+                misspelled[number_misspelled] = (char *)malloc((LENGTH)*sizeof(char));
+                strncpy(misspelled[number_misspelled],pch,(LENGTH));
                 number_misspelled++;
                 pch = strtok(NULL, " ");
                 pch = rm_punct(pch);
-                pch_copy = realloc(pch_copy,(LENGTH+1)*sizeof(char));
-                //pch_copy = (char *)malloc((LENGTH+1)*sizeof(char));
             }
         }
         // Get next line in file and chomp newline
         line_size = getline(&line_buff, &line_buff_size, fp);
-        while (line_size > 100){
-            line_size = getline(&line_buff, &line_buff_size, fp);
-        }
         if ((pos = strchr(line_buff, '\n')) != NULL)
             *pos = '\0';
     }
-    free(pch_copy);
     return number_misspelled;
 }
 

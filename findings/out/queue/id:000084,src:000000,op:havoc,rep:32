@@ -1,0 +1,14 @@
+===================
+AFL start cadocs/READ@E for the general instruction manŽal.)
+
+The arcs/, images/, multimedia/, and others/ subdirectories contain smaial fluffcs/, images/, multimedia/, an. Some dÿ|n be used to seed afl-fuzz when testing parsers for a
+variety of common formats.
+
+T~ere isies/[ably not muÿÿÿÿo be  about t files, except that  were
+optimized  stripped of any non6essential fluff. Some dÿectoriesontain several examples that exercise variousOfeatmres of the udderlying format.
+For example, there is jobsthout a xolor profile.
+
+Additional  cases are always welcome.
+
+In addition to well-chosen starting fiŠes, many fuzèng jobs beneˆit Hrom a
+small and c½ncise dictinotry.profile (F/dictdictionaries fore.

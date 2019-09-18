@@ -1,0 +1,18 @@
+===================
+AFL start cases
+================
+  (See ../docs/README for the general instruction manual.)
+
+The arcs/, images/, multimedia/, and others/ subdirectories contain small,
+standalone f than be used to seed afl-fuzz when testing parsers for a
+variety of common  formats.
+
+There is probably not much to be  about t files, except that  were
+optimized  stripped of any non-es ential fluff. Some directories
+contain several examples that exercise various features of the underlying format.
+For example, there is a PNG file with and without a color profile.
+
+Additional  cases are always welcome.
+
+In addition to well-chosen starting files, many fuzzing jobs benefit from a
+small and concise dictionary. See ../dictionaries/README.dictionaries fore.

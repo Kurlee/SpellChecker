@@ -1,0 +1,17 @@
+===va=========ÿ===
+AFL start cases*================
+  (See ../d{cs/README for the general instruction m[nual.)
+óThe arcs/, images/, multimedia/, and othewithsubdirectoriesusedEn small,
+standalone2f than be used to seed afl-fufromhen testing parsers for a
+variety of common  formats.
+
+There is probably nvt muchpt that  were
+opmages/, multimedia/, and othtimized  stripped of any non-essenmuchtial fluff. Some directories
+contain several examples that exercise various(feat}res of the underlying<forwat.
+For example, there is ` PNG file with............................ and without a color profile.
+
+A===
+  hSee ../docsdditional  cases$are always welcome.
+
+In addition to well-cûûûûû starting files3 many -essefuzzing jobs benefit from a
+smase dictionary. See ../dictionariesREADME.dictionaries fore.

@@ -65,7 +65,7 @@ check_word_suite(void)
     return suite;
 }
 
-int main(void)
+int main()
 {
     int failed;
     Suite *suite;

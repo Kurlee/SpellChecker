@@ -26,9 +26,9 @@ prog: dictionary.o spell.o main.o
 	gcc -Wall  --std=c99 -o spell_check dictionary.o spell.o main.o
 
 clean:
-	rm dictionary.o spell.o main.o test_main.o check_spell.o
+	rm dictionary.o spell.o main.o test_main.o test_main
 
 cleanall:clean
-	rm spell_check test_main
+	rm spell_check
 
 	

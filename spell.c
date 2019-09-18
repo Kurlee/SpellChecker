@@ -70,29 +70,31 @@ char *rm_punct(char *str) {
  */
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
-    char *line_buff = NULL;     // String from file
     char *pos = 0;                  // position of newline character
-    size_t line_buff_size = 0;  // size of string buffer
-    ssize_t line_size;          // chars in string from file
     char * pch;
     int number_misspelled = 0;
+    char string[80];
 
     if (fp == NULL){
         exit(5);
     }
 
-    line_size = getline(&line_buff, &line_buff_size, fp);
-    if ((pos = strchr(line_buff, '\n')) != NULL)
-        *pos = '\0';
+    while ( fgets (string, 80, fp) != NULL)
+    {
+
+// strip newline
+        if ((pos = strchr(string, '\n')) != NULL)
+            *pos = '\0';
 
 
 
-    while (line_size >= 0) {
 
-        // from line, get first word
-        pch = strtok(line_buff," ");
+        //get first word in string
+        pch = strtok(string," ");
+        // no dead string
         if (pch != NULL && strlen(pch) > LENGTH)
             pch = NULL;
+        // strip punctuation
         pch = rm_punct(pch);
 
 
@@ -123,10 +125,10 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
             }
         }
         // Get next line in file and chomp newline
-        line_buff = NULL;
-        line_size = getline(&line_buff, &line_buff_size, fp);
-        if ((pos = strchr(line_buff, '\n')) != NULL)
-            *pos = '\0';
+//        line_buff = NULL;
+//        line_size = getline(&line_buff, &line_buff_size, fp);
+//        if ((pos = strchr(line_buff, '\n')) != NULL)
+//            *pos = '\0';
     }
     return number_misspelled;
 }

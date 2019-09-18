@@ -1,4 +1,4 @@
 language: c
-before_script: autoreconf --install
+install: make get-deps
 compiler: gcc
-script: ./configure && make && make check
+script: make all

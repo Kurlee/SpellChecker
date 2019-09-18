@@ -5,14 +5,10 @@
 //  Created by admin on 9/4/19.
 //  Copyright © 2019 Adrian Abdala. All rights reserved.
 //
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-//#include "spell.h"
-//#include "AppSecAssignment1/dictionary.h"
-//#include "AppSecAssignment1/dictionary.c"
 #include "dictionary.h"
 #include <ctype.h>
 #include <arpa/nameser.h>
@@ -20,7 +16,6 @@
 
 
 
-char * str_to_lower(char *str);
 char * str_to_lower(char *str)
 {
     char *pNew1 = str;
@@ -46,7 +41,6 @@ char * str_to_lower(char *str)
 
 
 
-char *rm_punct(char *str);
 char *rm_punct(char *str) {
     if (str == NULL){
         return NULL;

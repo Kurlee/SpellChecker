@@ -1,14 +1,13 @@
 //
-//  spell.h
-//  SpellChecker
-//
-//  Created by admin on 9/4/19.
-//  Copyright © 2019 Adrian Abdala. All rights reserved.
+// Created by admin on 9/18/19.
 //
 
-#ifndef spell_h
-#define spell_h
+#ifndef SPELL_CHECK_SPELL_H
+#define SPELL_CHECK_SPELL_H
 
-#include <stdio.h>
 
-#endif /* spell_h */
+char *str_to_lower(char *str);
+char *rm_punct(char *str);
+
+
+#endif //SPELL_CHECK_SPELL_H

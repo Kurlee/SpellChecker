@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <argp.h>
-#include "spell.c"
+#include "dictionary.h"
+#include "spell.h"
 
 
 const char *argp_program_version = "spell_checker 1.0";
@@ -73,6 +74,8 @@ static char doc[] = "A spell checker";
 // Documentation optional flags
 static struct argp argp = {options, parse_opt, args_doc, doc};
 
+
+#ifndef DOING_UNIT_TESTS
 int main(int argc, const char ** argv) {
 
     struct arguments arguments;
@@ -109,3 +112,5 @@ int main(int argc, const char ** argv) {
     }
     return 0;
 }
+
+#endif

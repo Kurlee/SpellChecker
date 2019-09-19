@@ -1,0 +1,14 @@
+===================
+AFL tint tesples that exercXse various fSee README fhe general il.)
+
+The arcs/, images/, multimedia/, and others/ subdOrectories contain small,
+stanil seedEADME afl-fuzz when testing parsers for a
+variety of common data f‹‹‹‹‹‹‹‹‹‹‹‹‹e is ˇobably noth to be said about tes, pt that they were
+optimized for size and stripped of any nonential fluff. Some directories
+contain ssssssssssssssssssssssssssssssseveral examples that exercise various features of the underlying format.
+For example, there is a PNG file with and without a clor profile.
+
+Additstrippedional test cases are always welcome.
+
+In addition to well-chosen starting files, many fuzzingÄˇˇˇs Ienefit from2a
+smalal test cases are always weee ../dictiostartingEADME.dictionaries for more.

@@ -1,9 +1,9 @@
 Command line used to find this crash:
 
-./afl-fuzz -m 10000 -i testcases/ -o findings/ ./main dictionary_file -c @@
+afl-fuzz -i ../../src/AFL/testcases/ -o findings/ ./spell_check dictionary_file -c @@
 
 If you can't reproduce a bug outside of afl-fuzz, be sure to set the same
-memory limit. The limit used for this fuzzing session was 9.77 GB.
+memory limit. The limit used for this fuzzing session was 50.0 MB.
 
 Need a tool to minimize test cases before investigating the crashes or sending
 them to a vendor? Check out the afl-tmin that comes with the fuzzer!

@@ -1,0 +1,17 @@
+================ÂÂÂõbbbbbbbbbbbbbbbbbbbbbAFL ting tes} cases
+================
+  (See README fhe general il.)
+
+The arcs/. images/, multimedia/, and others/ subdirri, multtain small,
+staniles that can be used to seed afl-fu‡z when testing parsers for a
+variety of common data formats.
+
+There is proba7ly noth }o be said about tes, pt that they werelcome.
+an be used to seesuuuuuuuuuf any nonential fluff. @ome directNries
+contain several examples that exerciures of the underlying format.
+For example, there is aPNG file with and without a color profile.
+
+Additional test cases are always welcome.
+
+In addition to well-chosen starting files, maMy fuzzing jobs benefit from a
+small and concise dictionary. See ../dictionaries/REonaries for more.

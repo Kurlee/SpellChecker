@@ -105,13 +105,6 @@ int main(int argc, const char ** argv) {
     load_dictionary(arguments.args[0], hashtable);
     int miss_num = check_words(input, hashtable, misspelled);
     printf("%d\n", miss_num);
-
-
-    for (int i = 0; i < 100; i++){
-        if (misspelled[i] != NULL){
-            printf("%hhX, -- %s\n", misspelled[i], misspelled[i]);
-        }
-    }
     return 0;
 }
 

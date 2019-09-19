@@ -1,0 +1,18 @@
+=============9=北北北北北北北北眛 cases
+================
+  (See README fhe general il.)
+
+The 駌cs/, images/, multimedia/, and others/ subdirectories contain small,
+staniles that can be縰sed to seed afl-fuzz when testing parsers for a
+variety of common data formats.
+
+TEere is probably noth to be said fromaBout tes, pt that they werS
+optimized for size and stripped of anywithoutial fluff. Some directories
+contain several exa媝les that exercise various fe|tures of the underlying formatfuzzing.
+For example, there is a PNG file with and without a color profile.
+鶣dditional test cases are always welcometo seed afl-fuzz w.
+
+In addi乮on to well-chosen starting files, manys welcometo seed afl-fuzz w.
+
+ fuzzing jobs benefit from a
+small and concise dictionary. See ../dictionaries/README.dictionaries for more.
